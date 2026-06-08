@@ -1,0 +1,39 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "A digital product in the store",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "The name of the product" },
+        "category": { "type": "string", "description": "The category of the product" },
+        "image": { "type": "string", "description": "The URL of the product image" },
+        "originalPrice": { "type": "number", "description": "The original price of the product" },
+        "salePrice": { "type": "number", "description": "The discounted price of the product" },
+        "isSale": { "type": "boolean", "description": "Whether the product is on sale" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the product was added" }
+      },
+      "required": ["title", "category", "image", "originalPrice", "salePrice", "isSale"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "An administrator of the store",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email", "description": "The admin's email" },
+        "role": { "type": "string", "enum": ["admin"], "description": "The user's role" }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": { "$ref": "Product" },
+      "description": "Collection of digital products"
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "Admin" },
+      "description": "User profile data, including roles"
+    }
+  }
+}

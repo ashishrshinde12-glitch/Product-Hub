@@ -1,0 +1,8 @@
+{
+  "name": "ASHX GROW",
+  "description": "Premium High-Converting Digital Overlays, Video Bundles & Presets Landing Page.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

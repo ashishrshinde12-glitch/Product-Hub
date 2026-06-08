@@ -1,0 +1,97 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: products
+    // Document ID: auto-generated
+    // Fields:
+    //   - title: string (required)
+    //   - category: string (required)
+    //   - image: string (required)
+    //   - originalPrice: number (required)
+    //   - salePrice: number (required)
+    //   - isSale: bool (required)
+    //   - createdAt: timestamp (optional)
+    //
+    // Collection: users
+    // Document ID: userId
+    // Fields:
+    //   - email: string (required)
+    //   - role: string (required, 'admin' or 'user')
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         request.auth.token.email == "admin@deeha.store" ||
+         request.auth.token.email == "ashishrshinde12@gmail.com");
+    }
+
+    function isValidProduct(data) {
+      return data.keys().hasAll(['title', 'category', 'image', 'originalPrice', 'salePrice', 'isSale']) &&
+        data.title is string && data.title.size() > 0 && data.title.size() < 500 &&
+        data.category is string && data.category.size() > 0 &&
+        data.image is string && data.image.size() < 1048576 && // Limit to Firestore's 1MB
+        data.originalPrice is number && data.originalPrice >= 0 &&
+        data.salePrice is number && data.salePrice >= 0 &&
+        data.isSale is bool;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /products/{productId} {
+      allow read, write: if true;
+    }
+
+    match /payments/{paymentId} {
+      allow read, write: if true;
+    }
+
+    match /valid_utrs/{utrId} {
+      allow read, write: if true;
+    }
+
+    match /settings/{settingId} {
+      allow read, write: if true;
+    }
+
+    match /payment_alerts/{alertId} {
+      allow read, write: if true;
+    }
+
+    match /faqs/{faqId} {
+      allow read, write: if true;
+    }
+
+    match /earnings_proof/{proofId} {
+      allow read, write: if true;
+    }
+
+    match /preview_videos/{videoId} {
+      allow read, write: if true;
+    }
+
+    match /testimonials/{testimonialId} {
+      allow read, write: if true;
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin();
+    }
+  }
+}
